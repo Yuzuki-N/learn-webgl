@@ -1,32 +1,27 @@
-// RotateObject.js (c) 2012 matsuda and kanda
-// Vertex shader program
-var VSHADER_SOURCE =
-  'attribute vec4 a_Position;\n' +
-  'attribute vec2 a_TexCoord;\n' +
-  'uniform mat4 u_MvpMatrix;\n' +
-  'varying vec2 v_TexCoord;\n' +
-  'void main() {\n' +
-  '  gl_Position = u_MvpMatrix * a_Position;\n' +
-  '  v_TexCoord = a_TexCoord;\n' +
-  '}\n';
+let VSHADER_SOURCE = `
+  attribute vec4 a_Position;
+  attribute vec2 a_TexCoord;
+  uniform mat4 u_MvpMatrix;
+  varing vec2 v_TexCoord;
+  void main() {
+    gl_Position = u_MvpMatrix * a_Position;
+    v_TexCoord = a_TexCoord;
+  }  
+`
 
-// Fragment shader program
-var FSHADER_SOURCE =
-  '#ifdef GL_ES\n' +
-  'precision mediump float;\n' +
-  '#endif\n' +
-  'uniform sampler2D u_Sampler;\n' +
-  'varying vec2 v_TexCoord;\n' +
-  'void main() {\n' +
-  '  gl_FragColor = texture2D(u_Sampler, v_TexCoord);\n' +
-  '}\n';
+let FSHADER_SOURCE = `
+  precision mediump float;
+  uniform sampler2D u_Sampler;
+  varying vec2 v_TexCoord;
+  void main() {
+    gl_FragColor = texture2D(u_Sampler, v_TexCoord);
+  }
+`
 
 function main() {
-  // Retrieve <canvas> element
-  var canvas = document.getElementById('webgl');
+  let canvas = document.getElementById('webgl');
+  let gl = getWebGLContext(canvas);
 
-  // Get the rendering context for WebGL
-  var gl = getWebGLContext(canvas);
   if (!gl) {
     console.log('Failed to get the rendering context for WebGL');
     return;
@@ -39,13 +34,12 @@ function main() {
   }
 
   // Set the vertex information
-  var n = initVertexBuffers(gl);
+  let n = initVertexBuffers(gl);
   if (n < 0) {
     console.log('Failed to set the vertex information');
     return;
   }
 
-  // Set the clear color and enable the depth test
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   gl.enable(gl.DEPTH_TEST);
 
@@ -57,9 +51,10 @@ function main() {
   }
 
   // Calculate the view projection matrix
-  var viewProjMatrix = new Matrix4();
+  let viewProjMatrix = new Matrix4();
   viewProjMatrix.setPerspective(30.0, canvas.width / canvas.height, 1.0, 100.0);
   viewProjMatrix.lookAt(3.0, 3.0, 7.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+  
 
   // Register the event handler
   var currentAngle = [0.0, 0.0]; // Current rotation angle ([x-axis, y-axis] degrees)
@@ -199,6 +194,7 @@ function initArrayBuffer(gl, data, num, type, attribute) {
 
   return true;
 }
+
 
 function initTextures(gl) {
   // Create a texture object
